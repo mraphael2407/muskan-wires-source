@@ -40,7 +40,17 @@ export async function submitLead(leadData: {
   additional_info?: string;
   source?: string;
 }) {
-  return callEdgeFunction('lead', leadData);
+  const { data, error } = await supabase
+    .from('leads')
+    .insert([leadData])
+    .select();
+
+  if (error) {
+    console.error('Supabase insert error:', error);
+    throw error;
+  }
+
+  return data;
 }
 
 export async function submitQuoteRequest(quoteData: {
